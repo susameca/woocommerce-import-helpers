@@ -36,7 +36,7 @@ class Helpers {
 	}
 
 	public static function get_attribute_taxonomy_id( $raw_name, $raw_slug ) {
-		global $wpdb, $wc_product_attributes;
+		global $wc_product_attributes;
 
 		// These are exported as labels, so convert the label to a name if possible first.
 		$attribute_labels = wp_list_pluck( wc_get_attribute_taxonomies(), 'attribute_label', 'attribute_name' );

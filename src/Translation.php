@@ -19,8 +19,6 @@ class Translate {
 		}
 
 		$translated = 'not translated';
-		$base_url = 'https://api-free.deepl.com/v2/';
-		$authKey = "b282002c-a51a-4ce1-a601-fe351c272dd8:fx";
 		$headers = [
 			'Authorization' => 'DeepL-Auth-Key ' . $this->auth_key,
 			'Content-Type' => 'application/json',

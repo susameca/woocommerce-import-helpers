@@ -3,6 +3,37 @@ namespace Woo_Import_Helpers;
 
 class Image_Import {
 	//By URL functions
+	public static function return_image_id_by_url( $img_url, $post_id = null, $custom_folder = '' ) {
+		if ( !$img_url ) {
+			return;
+		}
+
+		if ( $custom_folder ) {
+			global $custom_upload_dir;
+			$custom_upload_dir = $custom_folder;
+
+			add_filter( 'upload_dir', array( __CLASS__, 'change_upload_dir' ) );
+		}
+
+		if ( $img_id = attachment_url_to_postid( $img_url ) ) {
+			return $img_id;
+		}
+
+		if ( $img_id = self::get_attachment_by_url( $img_url ) ) {
+			return $img_id;
+		}
+
+		$attachment_id = self::upload_image_from_url( $img_url, $post_id );
+
+		if ( $custom_folder ) {
+			$custom_upload_dir = null;
+
+			remove_filter( 'upload_dir', array( __CLASS__, 'change_upload_dir' ), $custom_folder );
+		}
+
+		return $attachment_id;
+	}
+
 	public static function upload_image_from_url( $url, $post_id = null ) {
 		require_once( ABSPATH . 'wp-admin/includes/file.php' );
 		require_once( ABSPATH . 'wp-admin/includes/image.php');
@@ -52,37 +83,6 @@ class Image_Import {
 		update_post_meta( $attach_id, '_woo_tuning_original_url', esc_url( $url ) );
 
 		return $attach_id;
-	}
-
-	public static function return_image_id_by_url( $img_url, $post_id = null, $custom_folder = '' ) {
-		if ( !$img_url ) {
-			return;
-		}
-
-		if ( $custom_folder ) {
-			global $custom_upload_dir;
-			$custom_upload_dir = $custom_folder;
-
-			add_filter( 'upload_dir', array( __CLASS__, 'change_upload_dir' ) );
-		}
-
-		if ( $img_id = attachment_url_to_postid( $img_url ) ) {
-			return $img_id;
-		}
-
-		if ( $img_id = self::get_attachment_by_url( $img_url ) ) {
-			return $img_id;
-		}
-
-		$attachment_id = self::upload_image_from_url( $img_url, $post_id );
-
-		if ( $custom_folder ) {
-			$custom_upload_dir = null;
-
-			remove_filter( 'upload_dir', array( __CLASS__, 'change_upload_dir' ), $custom_folder );
-		}
-
-		return $attachment_id;
 	}
 
 	public static function get_attachment_by_url( $image_url ) {
